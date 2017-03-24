@@ -31,10 +31,11 @@ class liputan6spider(scrapy.Spider):
 
 
     def parseContent(self,response):
-        newline = re.compile("(\n|\r)")
+        newline = re.compile("\n|\r|(<b>(Liputan6|Bola|Bintang)\.com, \w{1,}</b>|<b>(Liputan6|Bola|Bintang)\.com, \w{1,} -</b>)")
         with open(self.filename,  'ab') as f:
             f.write("\n%s;%s;%s;%s;%s;%s;%s" %(response.css("h1.read-page--header--title::text").extract_first().encode('utf-8').replace(';',''),
             re.sub(newline,'',response.css("div.article-content-body__item-content").extract_first().encode('utf-8')),
+            # response.css("div.article-content-body__item-content").extract_first().encode('utf-8'),
             response.css("meta[name='description']::attr(content)").extract_first().encode('utf-8').replace(';',''),
             random.choice(self.categories),
             random.choice(self.tag),
